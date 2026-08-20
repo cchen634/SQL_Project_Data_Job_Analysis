@@ -40,3 +40,12 @@ WITH (FORMAT csv, HEADER true, DELIMITER ',', ENCODING 'UTF8');
 COPY skills_job_dim
 FROM '/Users/chloechen/Desktop/Developer/SQL_Learning/SQL_Project_Data_Job_Analysis/csv_files/skills_job_dim.csv'
 WITH (FORMAT csv, HEADER true, DELIMITER ',', ENCODING 'UTF8');
+
+SELECT COUNT(*) FROM company_dim;
+SELECT COUNT(*) FROM skills_dim;
+SELECT COUNT(*) FROM job_postings_fact;
+SELECT COUNT(*) FROM skills_job_dim;
+
+SELECT *
+FROM job_postings_fact
+LIMIT 100;
