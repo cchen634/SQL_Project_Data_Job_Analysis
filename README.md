@@ -91,7 +91,9 @@ Breakdown of top-paying skills:
 - **Core Technical Stack:** Beyond the four most demanded skills, econdary data manipulation and management skills remain essential. This includes proficiency in libraries (Pandas), spreadsheets (Excel), and cloud data warehouses (Snowflake), underscoring the importance of a well-rounded skillset.
 - **Specialized Skills:** Many skills appear only once or twice revealing that focused domain knowledge is a trend among these highest-paid positions.
 
-![Top-Paying Skills](visualizations/2_top_paying_skills.png)
+<div align="center">
+  <img src="visualizations/2_top_paying_skills.png" alt="Top-Paying Skills">
+</div>
 *Bar graph visualizing the skill frequency for the top-10 highest-paying data analyst jobs. This visulization was created using python (pandas and matplotlib)*
 
 ### 3. Top-Demanded Skills
