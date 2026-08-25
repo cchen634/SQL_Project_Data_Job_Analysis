@@ -94,13 +94,93 @@ Breakdown of top-paying skills:
 <div align="center">
   <img src="visualizations/2_top_paying_skills.png" alt="Top-Paying Skills">
 </div>
+
 *Bar graph visualizing the skill frequency for the top-10 highest-paying data analyst jobs. This visulization was created using python (pandas and matplotlib)*
 
 ### 3. Top-Demanded Skills
 I inner joined [skill_job_dim.csv](../csv_files/skills_job_dim.csv) and [skills_dim.csv](../csv_files/skills_dim.csv) to link jobs to their skills. I then used the COUNT function to count the sum total of jobs assocciated with each skill, grouping on skill. To identify the most frequently occuring skills, I sorted the data in descending order, identifying the most relevant skills for data analyst job-seekers to acquire and build upon.
 
+```sql
+SELECT
+    skills,
+    COUNT(skills_job_dim.job_id) AS demand_count
+FROM job_postings_fact
+INNER JOIN skills_job_dim on job_postings_fact.job_id = skills_job_dim.job_id
+INNER JOIN skills_dim ON skills_job_dim.skill_id = skills_dim.skill_id
+WHERE
+    job_title_short = 'Data Analyst' AND
+    job_work_from_home = TRUE
+GROUP BY 
+    skills
+ORDER BY
+    demand_count DESC
+LIMIT 5;
+```
+Breakdown of top-demanded skills:
+- **Programming Proficiency:** Two of the top five most demanded skills for data analysts are related to programming, highlighting the importance of coding skills—particularly in SQL and Python.
+- **Spreadsheet Software:** Coming in second for the most in-demand skill is Excel, reflecting the importance of data management skills and showing that Excel is the most widely preferred application for doing so.
+- **Visualization Tools:** Tableau and Power BI, which are both data visualization tools are the fourth and fifth highest-demanded skills, reinforcing the importance of not just being able to wrangle data but effectively illustrating why those numbers matter.
+
+|Skills   | Demand Count |
+|---------|--------------|
+|SQL      | 7291         |
+|Excel    | 4611         |
+|Python   | 4330         |
+|Tableau  | 3745         |
+|Power BI | 2609         |
+
+*Table containing the counts of the top-5 demanded skills among data analst job postings*
+
 ### 4. Top-Paying Skills
-This question is similar to a mix of questions two and three, likewise, my approach to this was also a mix of my approach to those two. I joined tables to link essential data and for each skill, found the average yearly salaries of the jobs that required that skill. Examining these skills in descending order provides guidance to job-seekers on the most financially rewarding and promising skills to learn.
+This question is similar to a mix of questions two and three, likewise, my approach to this was also a mix of my approach to those two. I joined tables to link essential data and for each skill, found the average yearly salaries of the jobs that required that skill. Examining these skills in descending order provides guidance to job-seekers on the most financially rewarding and promising skills to learn, regardless of job location.
+```sql
+SELECT
+    skills_dim.skills AS skill,
+    ROUND(AVG(salary_year_avg), 0) as avg_yearly_salary
+FROM
+    job_postings_fact
+INNER JOIN skills_job_dim
+ON job_postings_fact.job_id = skills_job_dim.job_id
+INNER JOIN skills_dim
+ON skills_job_dim.skill_id = skills_dim.skill_id
+WHERE
+    salary_year_avg IS NOT NULL AND
+    job_title_short = 'Data Analyst' AND
+    job_work_from_home = TRUE
+GROUP BY
+    skill
+ORDER BY
+    avg_yearly_salary DESC
+LIMIT 25;
+```
+Breakdown of the top-paying skills:
+- **Distributed Computing & Big Data:** PySpark holds the spot for highest-earning skill, revealing that being able to process and analyze large datasets is a common attribute among the highest-compensated roles.
+- **Specialized Expertise:** Many of the highest skill-specific average salaries are tied to more focused technologies, like Couchbase for NoSQL databases as well as IBM Watson and DataRobot for machine learning. Compared to widely used analyst frameworks, these specific tools command higher pay due to talent scarcity.
+- **Python Ecosystem:** Essential Python libraries like pandas, numpy, and scikit-learn dominate high-paying programming skills, underscoring that statistical programming tools are still core requirements in high-paying positions.
+
+|Skill   | Average Salary ($) |
+|---------|--------------|
+|pyspark    | 208,172         |
+|bitbucket    | 189,155        |
+|couchbase|	160,515|
+|watson	|160,515|
+|datarobot	|155,486|
+|gitlab	|154,500|
+|swift	|153,750|
+|jupyter	|152,777|
+|pandas	|151,821|
+|elasticsearch	|145,000|
+|golang	|145,000|
+|numpy	|143,513|
+|databricks	|141,907|
+|linux	|136,508|
+|kubernetes	|132,500|
+|atlassian	|131,162|
+|twilio	|127,000|
+|airflow	|126,103|
+|scikit-learn	|125,781|
+|jenkins	|125,436|
+
 
 ### 5. Optimal Skills
 After joining the neccessay tables to relate the job to skills I found the number of jobs under each skill (labeled *demand_count*) and the overall average salary for the average anual salaries of those jobs per skill (labeled *avg_yearly_salary*). To find a balance between most sought after skills and skills required for the top-paying jobs, I the filted the data to skills that have a *demand_count* of at least 10. Finally, I ordered by the *avg_yearly_salary* followed by *demannd_count*—both in descending order. 
